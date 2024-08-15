@@ -1,4 +1,13 @@
 # 🛒 Go Ecommerce API
+
+[![Golang](https://img.shields.io/badge/Golang-00ADD8?style=for-the-badge&logo=go&logoColor=white)](https://golang.org/)
+[![Gin](https://img.shields.io/badge/Gin-00ADD8?style=for-the-badge&logo=go&logoColor=white)](https://gin-gonic.com/)
+[![Gorm](https://img.shields.io/badge/Gorm-29BEB0?style=for-the-badge&logo=go&logoColor=white)](https://gorm.io/)
+[![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
+[![Swagger](https://img.shields.io/badge/Swagger-85EA2D?style=for-the-badge&logo=swagger&logoColor=black)](https://swagger.io/)
+
+
 Welcome to the Go Ecommerce API project! This repository contains a fully-functional RESTful API built using Go, Gin, and Gorm. The project leverages PostgreSQL as its database and includes full Docker integration for seamless development and deployment. Below you'll find all the information you need to clone, set up, and run this project, as well as an overview of its architecture and features.
 
 🎯 Features
