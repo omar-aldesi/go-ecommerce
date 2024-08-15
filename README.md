@@ -53,9 +53,9 @@ ecommerce/
 
 Prerequisites
 
--Docker: Make sure you have Docker and Docker Compose installed on your machine.
+- Docker: Make sure you have Docker and Docker Compose installed on your machine.
 
--Go: Go should be installed if you want to run the application locally without Docker (optional).
+- Go: Go should be installed if you want to run the application locally without Docker (optional).
 
 
 🚀 Cloning the Repository
@@ -92,9 +92,9 @@ If you prefer to run the application locally without Docker:
 
 Set Up PostgreSQL:
 
--Install PostgreSQL and create a database for the project.
--Update the database connection details in the environment variables.
--Install Dependencies:
+- Install PostgreSQL and create a database for the project.
+- Update the database connection details in the environment variables.
+- Install Dependencies:
 
 ```bash
 go mod download
