@@ -107,8 +107,9 @@ Set Up PostgreSQL:
 
 ```bash
 go mod download
-Run the Application:
 ```
+
+Run the Application:
 
 ```bash
 go run main.go
