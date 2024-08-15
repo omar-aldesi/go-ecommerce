@@ -1,0 +1,952 @@
+basePath: /api/v1
+definitions:
+  schemas.AddonResponse:
+    properties:
+      id:
+        type: integer
+      price:
+        type: number
+      tax:
+        type: number
+    type: object
+  schemas.AddonSchema:
+    properties:
+      id:
+        type: integer
+      quantity:
+        type: integer
+    required:
+    - id
+    - quantity
+    type: object
+  schemas.NewPaymentSchema:
+    properties:
+      amount:
+        type: number
+      currency:
+        type: string
+      gateway:
+        type: string
+      payment_client_secret:
+        type: string
+      payment_intent_id:
+        type: string
+      receipt_email:
+        type: string
+      status:
+        type: string
+    required:
+    - amount
+    - currency
+    - gateway
+    - payment_client_secret
+    - payment_intent_id
+    - receipt_email
+    - status
+    type: object
+  schemas.OrderCreationSchema:
+    properties:
+      branch_id:
+        type: integer
+      is_scheduled:
+        type: boolean
+      order_type:
+        type: string
+      payment:
+        $ref: '#/definitions/schemas.NewPaymentSchema'
+      products:
+        items:
+          $ref: '#/definitions/schemas.OrderItemSchema'
+        type: array
+      schedule_time:
+        type: string
+      shipping_address:
+        $ref: '#/definitions/schemas.ShippingAddressSchema'
+    required:
+    - branch_id
+    - order_type
+    - payment
+    - products
+    type: object
+  schemas.OrderItemSchema:
+    properties:
+      addons:
+        items:
+          $ref: '#/definitions/schemas.AddonSchema'
+        type: array
+      coupon_code:
+        type: string
+      product_id:
+        type: integer
+      quantity:
+        type: integer
+      variation:
+        items:
+          $ref: '#/definitions/schemas.ProductVariationSchema'
+        type: array
+    required:
+    - product_id
+    - quantity
+    type: object
+  schemas.OrderResponseSchema:
+    properties:
+      branch_id:
+        type: integer
+      id:
+        type: integer
+      is_paid:
+        type: boolean
+      is_scheduled:
+        type: boolean
+      products:
+        items:
+          $ref: '#/definitions/schemas.OrderItemSchema'
+        type: array
+      schedule_time:
+        type: string
+      status:
+        type: string
+      sub_total:
+        type: number
+      total:
+        type: number
+      type:
+        type: string
+      user_id:
+        type: integer
+    type: object
+  schemas.ProductResponseSchema:
+    properties:
+      addons:
+        items:
+          $ref: '#/definitions/schemas.AddonResponse'
+        type: array
+      branch_id:
+        type: integer
+      category_id:
+        type: integer
+      description:
+        type: string
+      discount_type:
+        type: string
+      discount_value:
+        type: number
+      id:
+        type: integer
+      image:
+        type: string
+      price:
+        type: number
+      stock:
+        type: integer
+      tags:
+        items:
+          type: string
+        type: array
+      total_sales:
+        type: integer
+      variations:
+        items:
+          $ref: '#/definitions/schemas.ProductVariationResponse'
+        type: array
+    type: object
+  schemas.ProductVariationResponse:
+    properties:
+      id:
+        type: integer
+    type: object
+  schemas.ProductVariationSchema:
+    properties:
+      id:
+        type: integer
+      options:
+        items:
+          $ref: '#/definitions/schemas.VariationOptionSchema'
+        type: array
+    required:
+    - id
+    type: object
+  schemas.RefreshToken:
+    properties:
+      refresh_token:
+        type: string
+    required:
+    - refresh_token
+    type: object
+  schemas.ShippingAddressSchema:
+    properties:
+      address_line_1:
+        type: string
+      address_line_2:
+        type: string
+      city:
+        type: string
+      country:
+        type: string
+      postcode:
+        type: string
+      state:
+        type: string
+    required:
+    - address_line_1
+    - address_line_2
+    - city
+    - country
+    - postcode
+    - state
+    type: object
+  schemas.UpdateOrderStatusSchema:
+    properties:
+      order_id:
+        type: integer
+      status:
+        type: string
+    required:
+    - order_id
+    - status
+    type: object
+  schemas.UpdateUserRequest:
+    properties:
+      email:
+        type: string
+      first_name:
+        type: string
+      last_name:
+        type: string
+      phone_number:
+        type: string
+    type: object
+  schemas.UserChangePasswordSchema:
+    properties:
+      new_password:
+        maxLength: 32
+        minLength: 8
+        type: string
+      old_password:
+        maxLength: 32
+        minLength: 8
+        type: string
+    required:
+    - new_password
+    - old_password
+    type: object
+  schemas.UserLogin:
+    properties:
+      email:
+        type: string
+      password:
+        maxLength: 32
+        minLength: 8
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  schemas.UserRegister:
+    properties:
+      email:
+        type: string
+      first_name:
+        type: string
+      last_name:
+        type: string
+      password:
+        maxLength: 32
+        minLength: 8
+        type: string
+      phone_number:
+        type: string
+    required:
+    - email
+    - first_name
+    - last_name
+    - password
+    - phone_number
+    type: object
+  schemas.VariationOptionSchema:
+    properties:
+      id:
+        type: integer
+    required:
+    - id
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: Docs and examples for this project api.
+  title: Go Ecommerce API
+  version: "1.0"
+paths:
+  /auth/change-password:
+    post:
+      consumes:
+      - application/json
+      description: Allows an authenticated user to change their password
+      parameters:
+      - description: Change password request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/schemas.UserChangePasswordSchema'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Change user's password
+      tags:
+      - auth
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Authenticates a user with email and password
+      parameters:
+      - description: User login credentials
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/schemas.UserLogin'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Authenticate user
+      tags:
+      - auth
+  /auth/logout:
+    post:
+      consumes:
+      - application/json
+      description: Invalidates the user's access and refresh tokens
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Logout user
+      tags:
+      - auth
+  /auth/refresh:
+    post:
+      consumes:
+      - application/json
+      description: Generates a new access token using the refresh token
+      parameters:
+      - description: Refresh token request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/schemas.RefreshToken'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Refresh access token
+      tags:
+      - auth
+  /auth/register:
+    post:
+      consumes:
+      - application/json
+      description: Creates a new user account
+      parameters:
+      - description: User registration details
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/schemas.UserRegister'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Register a new user
+      tags:
+      - auth
+  /auth/resend-verify:
+    post:
+      consumes:
+      - application/json
+      description: Resends the email verification link to the user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Resend email verification
+      tags:
+      - auth
+  /auth/reset-password:
+    post:
+      consumes:
+      - application/json
+      description: Initiates the password reset process for a user
+      parameters:
+      - description: User's email address
+        in: query
+        name: email
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Request password reset
+      tags:
+      - auth
+  /auth/reset-password/{token}:
+    post:
+      consumes:
+      - application/json
+      description: Resets the user's password using a token
+      parameters:
+      - description: Password reset token
+        in: path
+        name: token
+        required: true
+        type: string
+      - description: User's New Password
+        in: query
+        name: new_password
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Reset user's password
+      tags:
+      - auth
+  /auth/update-user:
+    patch:
+      consumes:
+      - application/json
+      description: Allows an authenticated user to update their profile details
+      parameters:
+      - description: Update user request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/schemas.UpdateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update user details
+      tags:
+      - auth
+  /auth/verify/{token}:
+    get:
+      consumes:
+      - application/json
+      description: Verifies the user's email address using a token
+      parameters:
+      - description: Email verification token
+        in: path
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Verify user's email
+      tags:
+      - auth
+  /branches/get/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get details of a branch by its ID
+      parameters:
+      - description: Branch ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get branch by ID
+      tags:
+      - branches
+  /branches/list:
+    get:
+      consumes:
+      - application/json
+      description: Get a list of all branches
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: List all branches
+      tags:
+      - branches
+  /categories/get-subcategory/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves the details of a subcategory by its ID
+      parameters:
+      - description: Subcategory ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get subcategory details
+      tags:
+      - categories
+  /categories/get/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves the details of a category by its ID
+      parameters:
+      - description: Category ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get category details
+      tags:
+      - categories
+  /categories/list:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves a list of all categories
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              additionalProperties: true
+              type: object
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      summary: List categories
+      tags:
+      - categories
+  /categories/list-subcategories:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves a list of all subcategories
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              additionalProperties: true
+              type: object
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      summary: List subcategories
+      tags:
+      - categories
+  /orders/create:
+    post:
+      consumes:
+      - application/json
+      description: Creates a new order for the specified products and branch
+      parameters:
+      - description: Order creation details
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/schemas.OrderCreationSchema'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/schemas.OrderResponseSchema'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create a new order
+      tags:
+      - orders
+  /orders/get/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves the details of an order by its ID
+      parameters:
+      - description: Order ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/schemas.OrderResponseSchema'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get order details
+      tags:
+      - orders
+  /orders/list:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves a list of orders for the authenticated user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/schemas.OrderResponseSchema'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: List user orders
+      tags:
+      - orders
+  /orders/update-status:
+    put:
+      consumes:
+      - application/json
+      description: Updates an order status by its ID
+      parameters:
+      - description: Order creation details
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/schemas.UpdateOrderStatusSchema'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update an order status
+      tags:
+      - orders
+  /products/get/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves the details of a product by its ID
+      parameters:
+      - description: Product ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/schemas.ProductResponseSchema'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get product details
+      tags:
+      - products
+  /products/list:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves a list of products with optional filtering and pagination
+      parameters:
+      - default: 10
+        description: Number of results to return
+        in: query
+        name: limit
+        type: integer
+      - default: 0
+        description: Number of results to skip
+        in: query
+        name: offset
+        type: integer
+      - description: Filter by category ID
+        in: query
+        name: category_id
+        type: integer
+      - description: Filter by subcategory ID
+        in: query
+        name: subcategory_id
+        type: integer
+      - description: Filter by branch ID
+        in: query
+        name: branch_id
+        type: integer
+      - description: Filter by minimum price
+        in: query
+        name: min_price
+        type: number
+      - description: Filter by maximum price
+        in: query
+        name: max_price
+        type: number
+      - description: Search products by name or description
+        in: query
+        name: search
+        type: string
+      - description: Filter by in-stock products
+        in: query
+        name: in_stock
+        type: boolean
+      - description: Sort by field (e.g., price, name)
+        in: query
+        name: sort_by
+        type: string
+      - default: asc
+        description: Sort order (asc or desc)
+        in: query
+        name: sort_order
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/schemas.ProductResponseSchema'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      summary: List products
+      tags:
+      - products
+securityDefinitions:
+  BearerAuth:
+    description: '"JWT token required. Format: Bearer {token}"'
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
