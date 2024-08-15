@@ -2,33 +2,35 @@
 Welcome to the Go Ecommerce API project! This repository contains a fully-functional RESTful API built using Go, Gin, and Gorm. The project leverages PostgreSQL as its database and includes full Docker integration for seamless development and deployment. Below you'll find all the information you need to clone, set up, and run this project, as well as an overview of its architecture and features.
 
 🎯 Features
-Go Gin Gorm: A powerful combination for building RESTful APIs with performance and ease of use.
 
-JWT Authentication: Secure your API endpoints with JSON Web Tokens (JWT) for user authentication.
+- Go Gin Gorm: A powerful combination for building RESTful APIs with performance and ease of use.
 
-Custom Error Handling: Robust error handling including validation and type-specific errors.
+- JWT Authentication: Secure your API endpoints with JSON Web Tokens (JWT) for user authentication.
 
-Modern Project Structure: Clean and scalable code organization with clear separation between concerns.
+- Custom Error Handling: Robust error handling including validation and type-specific errors.
 
-PostgreSQL Database: Reliable and scalable relational database integration using Gorm.
+- Modern Project Structure: Clean and scalable code organization with clear separation between concerns.
 
-Full Docker Integration: Effortless development and deployment with Docker, including Docker Compose.
+- PostgreSQL Database: Reliable and scalable relational database integration using Gorm.
 
-Advanced Currency Handling: Manage transactions and prices effectively with the gocurrency package.
+- Full Docker Integration: Effortless development and deployment with Docker, including Docker Compose.
 
-OpenAPI Documentation: Automatically generated API documentation for all endpoints.
+- Advanced Currency Handling: Manage transactions and prices effectively with the gocurrency package.
 
-RESTful API Protocols: Adheres to REST principles for easy and predictable API interactions.
+- OpenAPI Documentation: Automatically generated API documentation for all endpoints.
 
-Auth Middleware: Secure endpoints with a custom JWT-based authentication middleware.
+- RESTful API Protocols: Adheres to REST principles for easy and predictable API interactions.
 
-Token Blacklisting: Refresh token blacklisting for enhanced security.
+- Auth Middleware: Secure endpoints with a custom JWT-based authentication middleware.
 
-General Systems for Shipping & Payment: Modular and extensible design for handling shipping and payment logic.
+- Token Blacklisting: Refresh token blacklisting for enhanced security.
 
-Advanced Product Filtering: Powerful and flexible filtering options for product listings.
+- General Systems for Shipping & Payment: Modular and extensible design for handling shipping and payment logic.
+
+- Advanced Product Filtering: Powerful and flexible filtering options for product listings.
 
 📁 Project Structure
+
 The project follows a modern Go project structure:
 
 ```bash
@@ -50,10 +52,14 @@ ecommerce/
 🛠️ Getting Started
 
 Prerequisites
-Docker: Make sure you have Docker and Docker Compose installed on your machine.
-Go: Go should be installed if you want to run the application locally without Docker (optional).
+
+-Docker: Make sure you have Docker and Docker Compose installed on your machine.
+
+-Go: Go should be installed if you want to run the application locally without Docker (optional).
+
 
 🚀 Cloning the Repository
+
 To clone the repository, use the following command:
 
 ```bash
@@ -62,6 +68,7 @@ cd ecommerce
 ```
 
 🐳 Running the Application with Docker
+
 The easiest way to run the project is using Docker and Docker Compose. This will automatically set up the application along with a PostgreSQL database.
 
 Build and Run the Docker Containers:
@@ -78,14 +85,16 @@ Access Swagger UI:
 
 The OpenAPI documentation will be accessible at http://localhost:8080/swagger/index.html.
 
+
 ⚙️ Running the Application Locally
+
 If you prefer to run the application locally without Docker:
 
 Set Up PostgreSQL:
 
-Install PostgreSQL and create a database for the project.
-Update the database connection details in the environment variables.
-Install Dependencies:
+-Install PostgreSQL and create a database for the project.
+-Update the database connection details in the environment variables.
+-Install Dependencies:
 
 ```bash
 go mod download
@@ -107,11 +116,15 @@ This API uses JWT tokens for authentication. Clients must include a valid JWT in
 Authorization: Bearer <your-jwt-token>
 ```
 
+
 🔑 JWT Token Management
+
 Login: Clients can obtain a JWT by providing valid credentials via the /api/v1/auth/login endpoint.
 Refresh Token: The application supports token refreshing and blacklisting, ensuring a secure token lifecycle.
 
+
 🧩 API Documentation
+
 The API documentation is generated using OpenAPI (Swagger) and is accessible at:
 
 ```bash
@@ -120,8 +133,11 @@ http://localhost:8080/swagger/index.html
 
 This documentation provides detailed information about each endpoint, including request parameters, response formats, and authentication requirements.
 
+
 ⚠️ Error Handling
+
 The application has a custom error handling system that provides detailed and user-friendly error messages. Here are some examples:
+
 
 Validation Error Handling
 When a request fails validation, the system returns an error response with details about each invalid field:
