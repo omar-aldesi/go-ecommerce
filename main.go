@@ -2,11 +2,13 @@ package main
 
 import (
 	"ecommerce/app/core"
+	"ecommerce/app/core/middlewares"
 	v1 "ecommerce/app/endpoints/v1"
 	_ "ecommerce/docs"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
+	"golang.org/x/time/rate"
 	"log"
 )
 
@@ -28,6 +30,11 @@ func main() {
 		log.Fatalf("failed to initialize database: %v", err)
 		return
 	}
+
+	// Apply rate limiting to all routes
+	// Allow 5 requests per second with a burst of 10
+	r.Use(middlewares.RateLimitMiddleware(rate.Limit(5), 10))
+
 	// define the api schema docs endpoint
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
