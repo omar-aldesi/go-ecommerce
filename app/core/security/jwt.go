@@ -14,7 +14,7 @@ var (
 )
 
 var (
-	accessExpiryMinutes time.Duration = 1000
+	accessExpiryMinutes time.Duration = 30
 	refreshExpiryDays   time.Duration = 7
 )
 

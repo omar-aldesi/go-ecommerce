@@ -4,10 +4,12 @@ import (
 	"ecommerce/app/core"
 	"ecommerce/app/models"
 	"ecommerce/app/schemas"
+	"errors"
 	"fmt"
 	"gorm.io/gorm"
 	"log"
 	"net/http"
+	"time"
 )
 
 // helper functions
@@ -315,6 +317,17 @@ func checkRequiredVariations(dbProduct models.Product, processedVariations []uin
 func finalizeOrder(tx *gorm.DB, newOrder *models.Order, totalPrice float64, orderData schemas.OrderCreationSchema) error {
 	newOrder.Total = totalPrice
 
+	if orderData.CouponCode != "" {
+		totalPriceAfterDiscount, err := processCoupon(tx, orderData.CouponCode, totalPrice)
+		if err != nil {
+			return err
+		}
+		newOrder.Total = totalPriceAfterDiscount
+		newOrder.Coupon = orderData.CouponCode
+		newOrder.Discount = totalPrice - totalPriceAfterDiscount
+		log.Printf("Coupon applied. Coupon Code: %s, Discount: %.2f", orderData.CouponCode, newOrder.Discount)
+	}
+
 	if orderData.OrderType == "shipping" {
 		if err := processShippingAddress(tx, newOrder, orderData.ShippingAddress); err != nil {
 			return err
@@ -394,4 +407,33 @@ func createNewPayment(tx *gorm.DB, userID uint, newOrder *models.Order, paymentD
 	}
 	newOrder.Payment = newPayment
 	return nil
+}
+
+func processCoupon(tx *gorm.DB, couponCode string, totalPrice float64) (float64, error) {
+	var dbCoupon models.Coupon
+	if err := tx.
+		Where("code = ?", couponCode).
+		Where("is_active = ?", true).
+		Where("expire_date > ?", time.Now()).
+		First(&dbCoupon).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return 0.0, &core.HTTPError{
+				StatusCode: http.StatusNotFound,
+				Message:    fmt.Sprintf("Coupon %s not found", couponCode),
+			}
+		}
+		return 0.0, &core.HTTPError{
+			StatusCode: http.StatusInternalServerError,
+			Message:    fmt.Sprintf("Error getting coupon: %s", err),
+		}
+	}
+	if dbCoupon.MaxUsage != 0 && dbCoupon.MaxUsage <= dbCoupon.UsageCount {
+		return 0.0, &core.HTTPError{
+			StatusCode: http.StatusBadRequest,
+			Message:    fmt.Sprintf("Coupon %s has reached maximum usage", couponCode),
+		}
+	}
+	dbCoupon.UsageCount += 1
+	defer tx.Save(&dbCoupon)
+	return dbCoupon.ApplyDiscount(totalPrice), nil
 }

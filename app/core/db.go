@@ -17,7 +17,6 @@ func InitDB() error {
 	dbPassword := os.Getenv("DB_PASSWORD")
 	dbName := os.Getenv("DB_NAME")
 	dbPort := os.Getenv("DB_PORT")
-
 	//DSN and Connecting to the db
 	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=Asia/Shanghai", dbHost, dbUser, dbPassword, dbName, dbPort)
 	var err error
@@ -48,6 +47,7 @@ func InitDB() error {
 		&models.OrderItem{},
 		&models.OrderItemVariation{},
 		&models.Payment{},
+		&models.Coupon{},
 	}
 
 	// Loop for each model for auto Migration

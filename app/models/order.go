@@ -16,6 +16,8 @@ type Order struct {
 	IsPaid       bool      `gorm:"type:boolean;not null;default:false" json:"is_paid"`
 	IsScheduled  bool      `gorm:"type:boolean;not null;default:false" json:"is_scheduled"`
 	ScheduleTime time.Time `json:"schedule_time"`
+	Coupon       string    `gorm:"type:varchar(20);null" json:"coupon"`
+	Discount     float64   `gorm:"type:decimal(10, 2);null" json:"discount"`
 
 	UserID uint
 	User   User `gorm:"foreignkey:UserID"`

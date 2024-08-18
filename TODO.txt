@@ -1,4 +1,4 @@
 Todo next:
-create coupon system and apply it to create order func
+create coupon system and apply it to create order func -> Done
 order scheduling system via background tasks
 modify the payment process and make it more specific

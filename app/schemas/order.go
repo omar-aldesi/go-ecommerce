@@ -27,6 +27,7 @@ type OrderCreationSchema struct {
 	ScheduleAt      time.Time             `json:"schedule_time"`
 	ShippingAddress ShippingAddressSchema `json:"shipping_address"`
 	Payment         NewPaymentSchema      `json:"payment" binding:"required"`
+	CouponCode      string                `json:"coupon_code"`
 }
 
 type OrderResponseSchema struct {
