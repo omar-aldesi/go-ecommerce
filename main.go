@@ -44,6 +44,7 @@ func main() {
 	v1.ProductsRouter(r)
 	v1.CategoriesRouter(r)
 	v1.BranchesRouter(r)
+	v1.CouponsRouter(r)
 
 	// Start the server
 	if err := r.Run(":8080"); err != nil {

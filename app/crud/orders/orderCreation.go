@@ -2,14 +2,13 @@ package orders
 
 import (
 	"ecommerce/app/core"
+	"ecommerce/app/crud"
 	"ecommerce/app/models"
 	"ecommerce/app/schemas"
-	"errors"
 	"fmt"
 	"gorm.io/gorm"
 	"log"
 	"net/http"
-	"time"
 )
 
 // helper functions
@@ -410,28 +409,9 @@ func createNewPayment(tx *gorm.DB, userID uint, newOrder *models.Order, paymentD
 }
 
 func processCoupon(tx *gorm.DB, couponCode string, totalPrice float64) (float64, error) {
-	var dbCoupon models.Coupon
-	if err := tx.
-		Where("code = ?", couponCode).
-		Where("is_active = ?", true).
-		Where("expire_date > ?", time.Now()).
-		First(&dbCoupon).Error; err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return 0.0, &core.HTTPError{
-				StatusCode: http.StatusNotFound,
-				Message:    fmt.Sprintf("Coupon %s not found", couponCode),
-			}
-		}
-		return 0.0, &core.HTTPError{
-			StatusCode: http.StatusInternalServerError,
-			Message:    fmt.Sprintf("Error getting coupon: %s", err),
-		}
-	}
-	if dbCoupon.MaxUsage != 0 && dbCoupon.MaxUsage <= dbCoupon.UsageCount {
-		return 0.0, &core.HTTPError{
-			StatusCode: http.StatusBadRequest,
-			Message:    fmt.Sprintf("Coupon %s has reached maximum usage", couponCode),
-		}
+	dbCoupon, err := crud.CouponIsValid(tx, couponCode)
+	if err != nil {
+		return 0.0, err
 	}
 	dbCoupon.UsageCount += 1
 	defer tx.Save(&dbCoupon)
